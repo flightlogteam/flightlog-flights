@@ -27,6 +27,11 @@ type Flight struct {
 	Distance     int          `gorm:"column:distance"`
 }
 
+// TableName - defines which tablename is used in the database
+func (Flight) TableName() string {
+	return "Flight"
+}
+
 // PrivacyLevel describes the shared status of an entity
 type PrivacyLevel int
 
