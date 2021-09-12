@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/flight"
+	"github.com/flightlogteam/flightlog-flights/src/location"
 )
 
 func main() {
+	log.Println("Starting flight-service")
 	//port := ":61227"
 	config := getConfiguration()
 
@@ -15,13 +19,32 @@ func main() {
 		log.Fatalf("No valid database configuration present \n")
 	}
 
-	_, err := flight.NewRepository(config.username, config.password, config.hostname, config.port, config.database)
+	common.EnsureDatabaseExists(config.username, config.password, config.hostname, config.port, config.database)
+
+	connection, err := common.CreateGormContext(config.username, config.password, config.hostname, config.port, config.database)
 
 	if err != nil {
 		log.Fatalf("cannot create connection to database: %v, on hostname %v, with user %v. Config gave following error:\n %v \n", config.database, config.hostname, config.username, err)
 		return
 	}
 
+	locationRepo, err := location.NewRepository(connection)
+	flightRepo, err := flight.NewRepository(connection)
+
+	if err != nil {
+		log.Fatalf("Unable to auto migrate database %v", err)
+		return
+	}
+
+	locationService := location.NewService(locationRepo)
+	flightService, err := flight.NewService("", "61226", flightRepo)
+
+	if err != nil {
+
+	}
+
+	fmt.Print(locationService)
+	fmt.Print(flightService)
 }
 
 func getConfiguration() databaseConfiguration {

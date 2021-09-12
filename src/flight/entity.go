@@ -1,30 +1,27 @@
 package flight
 
 import (
-	"time"
+	"github.com/flightlogteam/flightlog-flights/src/common"
+	"github.com/flightlogteam/flightlog-flights/src/location"
 )
-
-// Timestamp group of timestamps to be used other entities
-type Timestamp struct {
-	UpdatedAt *time.Time `gorm:"column:updatedat;type:time"`
-	CreatedAt *time.Time `gorm:"column:createdat;type:time"`
-	DeletedAt *time.Time `gorm:"column:deletedat;type:time"`
-}
 
 // Flight describes one flight
 type Flight struct {
-	Timestamp
-	ID           string       `gorm:"primaryKey;column:id;size:64"`
-	UserID       string       `gorm:"column:userid;size:64"`
-	StartID      int          `gorm:"column:startid;"`  // TODO: add foreign key
-	LandingID    int          `gorm:"column:landingid"` // TODO: add foreign key
-	FlyingDevice string       `gorm:"column:flyingdevice;size:64"`
-	Privacy      PrivacyLevel `gorm:"column:privacylevel"`
-	Description  string       `gorm:"column:description"`
-	Duration     int          `gorm:"column:duration"`
-	MaxHeight    int          `gorm:"column:maxHeight"`
-	MinHeight    int          `gorm:"column:minHeight"`
-	Distance     int          `gorm:"column:distance"`
+	common.Timestamp
+	ID     string `gorm:"primaryKey;column:id;size:64"`
+	UserID string `gorm:"column:userid;size:64"`
+
+	StartID      uint              `gorm:"column:startid"`
+	LandingID    uint              `gorm:"column:landingid"`
+	Start        location.Location `gorm:"foreignkey:StartID;references:id"`
+	Landing      location.Location `gorm:"foreignkey:LandingID;references:id"`
+	FlyingDevice string            `gorm:"column:flyingdevice;size:64"`
+	Privacy      PrivacyLevel      `gorm:"column:privacylevel"`
+	Description  string            `gorm:"column:description"`
+	Duration     int               `gorm:"column:duration"`
+	MaxHeight    int               `gorm:"column:maxHeight"`
+	MinHeight    int               `gorm:"column:minHeight"`
+	Distance     int               `gorm:"column:distance"`
 }
 
 // TableName - defines which tablename is used in the database
