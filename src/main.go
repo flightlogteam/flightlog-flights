@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
+	"github.com/flightlogteam/flightlog-flights/src/api"
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/flight"
 	"github.com/flightlogteam/flightlog-flights/src/location"
@@ -13,7 +13,7 @@ import (
 func main() {
 	log.Println("Starting flight-service")
 	//port := ":61227"
-	config := getConfiguration()
+	config, serviceConfig := getConfiguration()
 
 	if !config.IsValidConfiguration() {
 		log.Fatalf("No valid database configuration present \n")
@@ -37,24 +37,30 @@ func main() {
 	}
 
 	locationService := location.NewService(locationRepo)
-	flightService, err := flight.NewService("", "61226", flightRepo)
+	flightService, err := flight.NewService(serviceConfig.UserserviceUrl, serviceConfig.UserservicePort, flightRepo, serviceConfig, locationService)
 
 	if err != nil {
-
+		log.Printf("Unable instantiate flightservice. %v\n", err)
 	}
 
-	fmt.Print(locationService)
-	fmt.Print(flightService)
+	flightAPI := api.NewFlightsAPI(locationService, flightService)
+
+	flightAPI.StartAPI()
+
 }
 
-func getConfiguration() databaseConfiguration {
+func getConfiguration() (databaseConfiguration, common.ServiceConfig) {
 	return databaseConfiguration{
-		password: os.Getenv("DATABASE_PASSWORD"),
-		username: os.Getenv("DATABASE_USERNAME"),
-		port:     os.Getenv("DATABASE_PORT"),
-		hostname: os.Getenv("DATABASE_HOSTNAME"),
-		database: os.Getenv("DATABASE_DATABASE"),
-	}
+			password: os.Getenv("DATABASE_PASSWORD"),
+			username: os.Getenv("DATABASE_USERNAME"),
+			port:     os.Getenv("DATABASE_PORT"),
+			hostname: os.Getenv("DATABASE_HOSTNAME"),
+			database: os.Getenv("DATABASE_DATABASE"),
+		}, common.ServiceConfig{
+			UserserviceUrl:  os.Getenv("SERVICE_USERSERVICE_URL"),
+			UserservicePort: os.Getenv("SERVICE_USERSERVICE_PORT"),
+			Mode:            os.Getenv("SERVICE_MODE"),
+		}
 }
 
 type databaseConfiguration struct {

@@ -41,6 +41,10 @@ func (l *LocationService) CreateLocation(location *Location) (uint, error) {
 func (l *LocationService) UpdateLocation(location *Location) error {
 	err := l.validateLocation(location)
 
+	if location.ID <= 0 {
+		return common.ErrorServiceMissingParameter
+	}
+
 	if err != nil {
 		return err
 	}

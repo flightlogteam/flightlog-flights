@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/location"
 	"github.com/flightlogteam/userservice/grpc/userservice"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 // FlightService defines the flightservice
@@ -16,20 +18,23 @@ type FlightService struct {
 	repository      Repository
 	userRepository  userservice.UserServiceClient
 	locationService location.Service
+	config          common.ServiceConfig
 }
 
 // NewService - creates a new service
-func NewService(serviceUrl string, servicePort string, repository Repository) (Service, error) {
+func NewService(serviceUrl string, servicePort string, repository Repository, config common.ServiceConfig, locationService location.Service) (Service, error) {
 
-	connection, err := dialUserService(serviceUrl, servicePort)
+	connection, err := dialUserService(serviceUrl, servicePort, !config.IsDevMode())
 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("Unable to connect to userservice at %v:%v", serviceUrl, servicePort))
 	}
 
 	return &FlightService{
-		repository:     repository,
-		userRepository: userservice.NewUserServiceClient(connection),
+		repository:      repository,
+		userRepository:  userservice.NewUserServiceClient(connection),
+		config:          config,
+		locationService: locationService,
 	}, nil
 
 }
@@ -107,7 +112,18 @@ func (f *FlightService) validateFlight(flight *Flight) bool {
 	return flight.StartID > 0 && flight.LandingID > 0 && len(flight.Description) > 10
 }
 
-func dialUserService(serviceUrl string, port string) (*grpc.ClientConn, error) {
+func dialUserService(serviceUrl string, port string, secure bool) (*grpc.ClientConn, error) {
+	log.Println("the security is set to", secure)
+	if secure {
+		return grpc.Dial(fmt.Sprintf("%s:%s", serviceUrl, "61226"), grpc.WithTransportCredentials(createCredentials()))
+	}
 	return grpc.Dial(fmt.Sprintf("%s:%s", serviceUrl, port), grpc.WithInsecure())
-	//return grpc.Dial(fmt.Sprintf("%s:%s", serviceUrl, "61226"), grpc.WithTransportCredentials(createCredentials()))
+}
+
+func createCredentials() credentials.TransportCredentials {
+	creds, err := credentials.NewClientTLSFromFile("/etc/certificates/server.crt", "")
+	if err != nil {
+		log.Fatalf("Unable to start the Gateway due to missing certificates. Generate please: %v", err)
+	}
+	return creds
 }
