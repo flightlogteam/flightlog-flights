@@ -35,7 +35,7 @@ func (l *Repo) UpdateLocation(location *Location) error {
 
 func (l *Repo) GetAllLocations() ([]Location, error) {
 	var locations []Location
-	response := l.context.Preload("Start").Preload("Landing").Find(&locations)
+	response := l.context.Find(&locations)
 	return locations, response.Error
 }
 
