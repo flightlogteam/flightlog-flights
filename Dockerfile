@@ -9,7 +9,7 @@ RUN ls src
 WORKDIR /src
 
 # Enables watch functionality
-RUN go install github.com/mitranim/gow
+RUN go install github.com/mitranim/gow@latest
 
 RUN go build -o /flightservice
 
