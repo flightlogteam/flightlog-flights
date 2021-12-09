@@ -8,6 +8,7 @@ import (
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/flight"
 	"github.com/flightlogteam/flightlog-flights/src/location"
+	"github.com/flightlogteam/flightlog-flights/src/start"
 )
 
 func main() {
@@ -30,6 +31,7 @@ func main() {
 
 	locationRepo, err := location.NewRepository(connection)
 	flightRepo, err := flight.NewRepository(connection)
+	startRepo, err := start.NewRepository(connection)
 
 	if err != nil {
 		log.Fatalf("Unable to auto migrate database %v", err)
@@ -38,15 +40,14 @@ func main() {
 
 	locationService := location.NewService(locationRepo)
 	flightService, err := flight.NewService(serviceConfig.UserserviceUrl, serviceConfig.UserservicePort, flightRepo, serviceConfig, locationService)
+	startService := start.NewService(startRepo, locationService)
 
 	if err != nil {
 		log.Printf("Unable instantiate flightservice. %v\n", err)
 	}
 
-	flightAPI := api.NewFlightsAPI(locationService, flightService)
-
+	flightAPI := api.NewFlightsAPI(locationService, flightService, startService)
 	flightAPI.StartAPI()
-
 }
 
 func getConfiguration() (databaseConfiguration, common.ServiceConfig) {

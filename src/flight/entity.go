@@ -3,6 +3,7 @@ package flight
 import (
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/location"
+	"github.com/flightlogteam/flightlog-flights/src/start"
 )
 
 // Flight describes one flight
@@ -13,7 +14,7 @@ type Flight struct {
 
 	StartID      uint              `gorm:"column:startid"`
 	LandingID    uint              `gorm:"column:landingid"`
-	Start        location.Location `gorm:"foreignkey:StartID;references:id"`
+	Start        start.Start       `gorm:"foreignkey:StartID;references:id"`
 	Landing      location.Location `gorm:"foreignkey:LandingID;references:id"`
 	FlyingDevice string            `gorm:"column:flyingdevice;size:64"`
 	Privacy      PrivacyLevel      `gorm:"column:privacylevel"`

@@ -7,6 +7,7 @@ import (
 
 	"github.com/flightlogteam/flightlog-flights/src/flight"
 	"github.com/flightlogteam/flightlog-flights/src/location"
+	"github.com/flightlogteam/flightlog-flights/src/start"
 	"github.com/gorilla/mux"
 	"github.com/klyngen/jsend"
 )
@@ -16,10 +17,11 @@ type FlightsAPI struct {
 	router          *mux.Router
 	locationService location.Service
 	flightService   flight.Service
+	startService    start.Service
 }
 
 // NewFlightsApi creates an api with a functioning router
-func NewFlightsAPI(locationService location.Service, flightService flight.Service) FlightsAPI {
+func NewFlightsAPI(locationService location.Service, flightService flight.Service, startService start.Service) FlightsAPI {
 	router := mux.NewRouter()
 
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

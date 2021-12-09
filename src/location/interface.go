@@ -5,6 +5,7 @@ type Reader interface {
 	GetAllLocations() ([]Location, error)
 	// GetLocationById gets a single location by ID
 	GetLocationById(id uint) (*Location, error)
+	GetLoactionExistance(ids []uint) (bool, error)
 }
 
 type Writer interface {

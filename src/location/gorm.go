@@ -40,5 +40,12 @@ func (l *Repo) GetAllLocations() ([]Location, error) {
 }
 
 func (l *Repo) GetLocationById(id uint) (*Location, error) {
-	panic("kfdsndsfnfds")
+	var location Location
+	result := l.context.Where("id = ?").First(&location)
+	return &location, result.Error
+}
+
+func (l *Repo) GetLoactionExistance(ids []uint) (bool, error) {
+	var count int64
+	return (count == int64(len(ids))), l.context.Where("id IN ?", ids).Count(&count).Error
 }

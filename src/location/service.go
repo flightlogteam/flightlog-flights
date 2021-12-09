@@ -64,6 +64,10 @@ func (l *LocationService) validateLocation(location *Location) error {
 	return nil
 }
 
+func (l *LocationService) GetLoactionExistance(ids []uint) (bool, error) {
+	return l.repository.GetLoactionExistance(ids)
+}
+
 func isValidCoordinateSet(lat string, lon string) bool {
 	latNumber, err := strconv.ParseFloat(lat, 32)
 	if err != nil {

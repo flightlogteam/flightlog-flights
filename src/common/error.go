@@ -13,4 +13,6 @@ var (
 	ErrorServiceNoSuchLocation = errors.New("No such location")
 	// ErrorServiceBadCoordinates when coordinates are wrong
 	ErrorServiceBadCoordinates = errors.New("Invalid coordinate set")
+
+	ErrorServiceBadDirectionSet = errors.New("The given wind directions are not valid")
 )
