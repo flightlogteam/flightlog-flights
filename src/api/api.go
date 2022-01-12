@@ -31,9 +31,11 @@ func NewFlightsAPI(locationService location.Service, flightService flight.Servic
 	api := FlightsAPI{
 		locationService: locationService,
 		flightService:   flightService,
+		startService:    startService,
 		router:          router,
 	}
 	api.mountFlightRoutes(router)
+	api.mountStartRoutes(router)
 	api.mountLocationRoutes(router)
 
 	return api
