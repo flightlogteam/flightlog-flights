@@ -1,6 +1,8 @@
 package start
 
 import (
+	"log"
+
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/location"
 )
@@ -18,7 +20,17 @@ func NewService(repository Repository, locationService location.Service) Service
 }
 
 func (s *StartService) Create(start *Start) (uint, error) {
+
+	for _, l := range append(start.Landings, start.StartLocation) {
+		_, err := s.locationService.CreateLocation(&l)
+		if err != nil {
+			return 0, err
+		}
+	}
+
 	err := s.validateStart(start)
+
+	log.Printf("Could not validate the start. %v", err)
 
 	if err != nil {
 		return 0, err
@@ -32,6 +44,10 @@ func (s *StartService) Update(start *Start) error {
 
 	if err != nil {
 		return err
+	}
+
+	for _, l := range append(start.Landings, start.StartLocation) {
+		s.locationService.CreateLocation(&l)
 	}
 
 	return s.repository.Update(start)
@@ -55,14 +71,14 @@ func (s *StartService) validateStart(start *Start) error {
 	return nil
 }
 
-func validateDirection(direction uint64) bool {
-	return direction < 0xFFFFFFFFFFFFFFF && direction > 0
+func validateDirection(direction int) bool {
+	return direction < 0xFFFFFF && direction >= 0
 }
 
 func (s *StartService) validateLoactions(start *Start) error {
 	var locationIdList []uint
 
-	locationIdList = append(locationIdList, start.StartLocationID)
+	locationIdList = append(locationIdList, start.StartLocation.ID)
 
 	for _, landing := range start.Landings {
 		locationIdList = append(locationIdList, landing.ID)
@@ -75,5 +91,4 @@ func (s *StartService) validateLoactions(start *Start) error {
 	}
 
 	return nil
-
 }

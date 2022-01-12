@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/klyngen/jsend"
 )
 
-func (a *FlightsAPI) mountStartApi(router *mux.Router) {
+func (a *FlightsAPI) mountStartRoutes(router *mux.Router) {
 	router.HandleFunc("/start", a.handleStartCreation).Methods("POST")
 	router.HandleFunc("/start", a.handleStartUpdate).Methods("PUT")
 	router.HandleFunc("/start/{id}", a.handleStartDeletion).Methods("DELETE")
@@ -19,11 +20,12 @@ func (a *FlightsAPI) mountStartApi(router *mux.Router) {
 func (a *FlightsAPI) handleStartCreation(w http.ResponseWriter, r *http.Request) {
 	var start start.Start
 
-	if json.NewDecoder(r.Body).Decode(&start) != nil {
-		jsend.FormatResponse(w, "Unreadable JSON", jsend.BadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&start); err != nil {
+		jsend.FormatResponse(w, "Unreadable JSON:\n"+err.Error(), jsend.BadRequest)
 		return
 	}
 
+	log.Println(a.startService)
 	id, err := a.startService.Create(&start)
 
 	if err != nil {
