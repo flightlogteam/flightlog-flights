@@ -3,21 +3,29 @@ package logfile
 import (
 	"math"
 	"time"
+
+	"github.com/flightlogteam/flightlog-flights/src/location"
 )
 
-type logRecord struct {
+type FlightLog struct {
+	Log     FlightStats
+	Start   *location.Location
+	Landing *location.Location
+}
+
+type LogRecord struct {
 	AltitudePreassure int
 	AltitudeGNSS      int
 	Time              time.Time
-	Latitude          float64
-	Longitude         float64
+	Latitude          float64 // In degrees
+	Longitude         float64 // In degrees
 }
 
 func hsin(theta float64) float64 {
 	return math.Pow(math.Sin(theta/2), 2)
 }
 
-func (s *logRecord) differenceInMeters(t logRecord) float64 {
+func (s *LogRecord) differenceInMeters(t LogRecord) float64 {
 	// convert to radians
 	// must cast radius as float to multiply later
 	var la1, lo1, la2, lo2, r float64
@@ -35,7 +43,7 @@ func (s *logRecord) differenceInMeters(t logRecord) float64 {
 }
 
 // elevationSpeed returns meters per second between two loglines
-func (s *logRecord) elevationSpeed(t logRecord) float64 {
+func (s *LogRecord) elevationSpeed(t LogRecord) float64 {
 	meters := t.AltitudePreassure - s.AltitudePreassure
 	seconds := t.Time.Sub(s.Time).Seconds()
 
@@ -43,20 +51,13 @@ func (s *logRecord) elevationSpeed(t logRecord) float64 {
 }
 
 // groundSpeed as in meter per second
-func (s *logRecord) groundSpeed(t logRecord) float64 {
+func (s *LogRecord) groundSpeed(t LogRecord) float64 {
 	seconds := t.Time.Sub(s.Time).Seconds()
 	return math.Round((s.differenceInMeters(t)/seconds)*100) / 100
 }
 
-type LOGFILETYPE string
-
-const (
-	IGC LOGFILETYPE = "igc"
-	KML LOGFILETYPE = "kml"
-)
-
-type FlightLog struct {
-	Records     []logRecord
+type FlightStats struct {
+	Records     []LogRecord
 	MaxAltitude int
 	MinAltitude int
 	MaxClimb    float64
@@ -65,8 +66,8 @@ type FlightLog struct {
 	Duration    int
 }
 
-func NewFlightLog(records []logRecord) FlightLog {
-	log := FlightLog{
+func NewFlightStats(records []LogRecord) FlightStats {
+	log := FlightStats{
 		Records:  records,
 		Duration: int(records[len(records)-1].Time.Sub(records[0].Time).Seconds()),
 	}
@@ -112,10 +113,10 @@ func NewFlightLog(records []logRecord) FlightLog {
 
 type stack struct {
 	size    int
-	records []logRecord
+	records []LogRecord
 }
 
-func (s *stack) push(record logRecord) {
+func (s *stack) push(record LogRecord) {
 	if len(s.records) == s.size {
 		s.records = s.records[1:]
 	}

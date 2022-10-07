@@ -34,10 +34,10 @@ func (line logline) RecordType() recordType {
 // 0					 10				   20				   30
 // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
 // B 1 5 5 9 4 3 6 1 1 7 6 2 1 N 0 1 0 2 3 6 4 2 E A 0 0 6 1 8 0 0 6 9 1
-func (line logline) ReadBRecord(date *time.Time) (logRecord, error) {
+func (line logline) ReadBRecord(date *time.Time) (LogRecord, error) {
 	line = logline(strings.TrimSpace(string(line)))
 	if len(line) != 35 {
-		return logRecord{}, errors.New("Invalid record")
+		return LogRecord{}, errors.New("Invalid record")
 	}
 
 	if date == nil {
@@ -51,7 +51,7 @@ func (line logline) ReadBRecord(date *time.Time) (logRecord, error) {
 	altitudePreassure, _ := strconv.ParseInt(string(line[25:30]), 10, 32)
 	altitudeGNSS, _ := strconv.ParseInt(string(line[30:35]), 10, 32)
 
-	return logRecord{
+	return LogRecord{
 		AltitudePreassure: int(altitudePreassure),
 		AltitudeGNSS:      int(altitudeGNSS),
 		Latitude:          latitude,
@@ -122,8 +122,8 @@ func (r *IGCLogfileReader) resolveLocation(latitude float64, longitude float64) 
 	return err
 }
 
-func (r *IGCLogfileReader) ReadRecords() ([]logRecord, error) {
-	var records []logRecord
+func (r *IGCLogfileReader) ReadRecords() ([]LogRecord, error) {
+	var records []LogRecord
 	for _, segment := range r.rawRecords {
 		line := logline(segment)
 		if line.RecordType() == BRecord && line.length() == 35 {

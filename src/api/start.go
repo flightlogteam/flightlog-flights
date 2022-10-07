@@ -12,9 +12,9 @@ import (
 )
 
 func (a *FlightsAPI) mountStartRoutes(router *mux.Router) {
-	router.HandleFunc("/start", a.handleStartCreation).Methods("POST")
-	router.HandleFunc("/start", a.handleStartUpdate).Methods("PUT")
-	router.HandleFunc("/start/{id}", a.handleStartDeletion).Methods("DELETE")
+	router.HandleFunc("/start", a.handleStartCreation).Methods("POST", http.MethodOptions)
+	router.HandleFunc("/start", a.handleStartUpdate).Methods("PUT", http.MethodOptions)
+	router.HandleFunc("/start/{id}", a.handleStartDeletion).Methods("DELETE", http.MethodOptions)
 }
 
 func (a *FlightsAPI) handleStartCreation(w http.ResponseWriter, r *http.Request) {

@@ -8,6 +8,7 @@ import (
 	"github.com/flightlogteam/flightlog-flights/src/common"
 	"github.com/flightlogteam/flightlog-flights/src/flight"
 	"github.com/flightlogteam/flightlog-flights/src/location"
+	"github.com/flightlogteam/flightlog-flights/src/logfile"
 	"github.com/flightlogteam/flightlog-flights/src/start"
 )
 
@@ -46,7 +47,9 @@ func main() {
 		log.Printf("Unable instantiate flightservice. %v\n", err)
 	}
 
-	flightAPI := api.NewFlightsAPI(locationService, flightService, startService)
+	logfileService := logfile.NewLogfileService(locationService)
+
+	flightAPI := api.NewFlightsAPI(locationService, flightService, startService, logfileService)
 	flightAPI.StartAPI()
 }
 

@@ -6,6 +6,9 @@ type Reader interface {
 	// GetLocationById gets a single location by ID
 	GetLocationById(id uint) (*Location, error)
 	GetLoactionExistance(ids []uint) (bool, error)
+	// GetClosestLocation gets the closest locations
+	// ordered by closest to furthest away
+	// `threshold` is the amount of meters
 }
 
 type Writer interface {
@@ -18,9 +21,11 @@ type Writer interface {
 type Repository interface {
 	Reader
 	Writer
+	GetClosestLocation(latitude_north float64, latitude_south float64, longitude_east float64, longitude_west float64) ([]Location, error)
 }
 
 type Service interface {
 	Reader
 	Writer
+	GetClosestLocation(latitude float64, longitude float64, treshold int) ([]Location, error)
 }

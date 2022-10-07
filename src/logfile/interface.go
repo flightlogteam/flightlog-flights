@@ -1,5 +1,9 @@
 package logfile
 
 type FileReader interface {
-	ReadRecords() ([]logRecord, error)
+	ReadRecords() ([]LogRecord, error)
+}
+
+type Service interface {
+	ProcessIGCLogfile(records string) (*FlightLog, error)
 }

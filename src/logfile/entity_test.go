@@ -14,7 +14,6 @@ func TestElevationSpeedCalculation(t *testing.T) {
    `
 
 	reader, err := NewIGCLogfileReader(logRecords)
-
 	assert.NoError(t, err, "Creating a reader should not result in an error")
 
 	records, _ := reader.ReadRecords()
@@ -47,7 +46,7 @@ func TestFlightLogCreation(t *testing.T) {
 	reader, _ := NewIGCLogfileReader(recordString)
 	records, _ := reader.ReadRecords()
 
-	log := NewFlightLog(records)
+	log := NewFlightStats(records)
 
 	assert.Equal(t, 691, log.MaxAltitude)
 	assert.Equal(t, 169, log.MinAltitude)

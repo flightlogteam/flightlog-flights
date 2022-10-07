@@ -41,7 +41,7 @@ func (l *Repo) GetAllLocations() ([]Location, error) {
 
 func (l *Repo) GetLocationById(id uint) (*Location, error) {
 	var location Location
-	result := l.context.Where("ID = ?").First(&location)
+	result := l.context.Where("ID = ?", id).First(&location)
 	return &location, result.Error
 }
 
@@ -49,4 +49,11 @@ func (l *Repo) GetLoactionExistance(ids []uint) (bool, error) {
 	var count int64
 	var location Location
 	return (count == int64(len(ids))), l.context.Model(&location).Where("id IN ?", ids).Count(&count).Error
+}
+
+func (l *Repo) GetClosestLocation(latitude_north float64, latitude_south float64, longitude_west float64, longitude_east float64) ([]Location, error) {
+	var locations []Location
+	response := l.context.Where("latitude < ? and latitude > ? and longitude < ? and longitude > ?", latitude_north, latitude_south, longitude_east, longitude_west).Find(&locations)
+
+	return locations, response.Error
 }

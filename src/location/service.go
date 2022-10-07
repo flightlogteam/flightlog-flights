@@ -1,8 +1,6 @@
 package location
 
 import (
-	"strconv"
-
 	"github.com/flightlogteam/flightlog-flights/src/common"
 )
 
@@ -68,22 +66,23 @@ func (l *LocationService) GetLoactionExistance(ids []uint) (bool, error) {
 	return l.repository.GetLoactionExistance(ids)
 }
 
-func isValidCoordinateSet(lat string, lon string) bool {
-	latNumber, err := strconv.ParseFloat(lat, 32)
-	if err != nil {
+func (l *LocationService) GetClosestLocation(latitude float64, longitude float64, treshold int) ([]Location, error) {
+
+	location := Location{
+		Latitude:  latitude,
+		Longitude: longitude,
+	}
+
+	return l.repository.GetClosestLocation(location.CoordinatesFromRadius(int64(treshold)))
+}
+
+func isValidCoordinateSet(lat float64, lon float64) bool {
+
+	if lat > 90 && lat < -90 {
 		return false
 	}
 
-	if latNumber > 90 && latNumber < -90 {
-		return false
-	}
-
-	lonNumber, err := strconv.ParseFloat(lon, 32)
-	if err != nil {
-		return false
-	}
-
-	if lonNumber > 180 && latNumber < -180 {
+	if lon > 180 && lon < -180 {
 		return false
 	}
 
