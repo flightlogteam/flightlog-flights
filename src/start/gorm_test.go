@@ -46,8 +46,8 @@ func TestStartCreation(t *testing.T) {
 	startRepo, _ := createStartRepo(database)
 
 	testLocation := location.Location{
-		Latitude:        "61",
-		Longitude:       "10",
+		Latitude:        61.0,
+		Longitude:       10.0,
 		Name:            "TestLoc1",
 		Description:     "Some short description",
 		FullDescription: "Full description",

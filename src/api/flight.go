@@ -11,8 +11,8 @@ import (
 
 func (a *FlightsAPI) mountFlightRoutes(router *mux.Router) {
 	router.HandleFunc("/flight/{id}", a.handleGetFlightByID).Methods("GET")
-	router.HandleFunc("/flight", a.handleCreateFlight).Methods("POST")
-	router.HandleFunc("/flight", a.handleUpdateFlight).Methods("PUT")
+	router.HandleFunc("/flight", a.handleCreateFlight).Methods("POST", http.MethodOptions)
+	router.HandleFunc("/flight", a.handleUpdateFlight).Methods("PUT", http.MethodOptions)
 }
 
 func (a *FlightsAPI) handleGetFlightByID(w http.ResponseWriter, r *http.Request) {

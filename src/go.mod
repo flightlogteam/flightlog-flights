@@ -7,8 +7,8 @@ require (
 	github.com/flightlogteam/userservice/grpc v0.0.8
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.3.0
+	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
-	github.com/icholy/utm v1.0.0
 	github.com/jonas-p/go-shp v0.1.1 // indirect
 	github.com/klyngen/jsend v0.0.0-20190716184451-284cbade049f
 	github.com/stretchr/testify v1.7.0
