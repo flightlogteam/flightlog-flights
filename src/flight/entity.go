@@ -35,9 +35,9 @@ type PrivacyLevel int
 
 const (
 	// ProtectedLevel describes a level where a user can be seen by anyone who has a flightlog login
-	ProtectedLevel PrivacyLevel = 0
+	ProtectedLevel PrivacyLevel = 1
 	// PrivateLevel describes a level where a user needs to grant access to those who wants access
-	PrivateLevel PrivacyLevel = 1
+	PrivateLevel PrivacyLevel = 2
 	// PublicLevel describes a user that anyone can watch with or without login
-	PublicLevel PrivacyLevel = 2
+	PublicLevel PrivacyLevel = 0
 )

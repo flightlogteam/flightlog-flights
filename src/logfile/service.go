@@ -1,7 +1,7 @@
 package logfile
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/flightlogteam/flightlog-flights/src/location"
 )
@@ -16,17 +16,27 @@ type LogfileService struct {
 	locationSerice location.Service
 }
 
-func (l *LogfileService) ProcessIGCLogfile(records string) (*FlightLog, error) {
+func (l *LogfileService) ProcessLogfile(records string, logfileType LOGFILE) (*FlightLog, error) {
 
-	fmt.Println(records)
-	reader, err := NewIGCLogfileReader(records)
+	var reader FileReader
+	var err error
+
+	switch logfileType {
+	case LOGFILE_KML:
+		reader, err = NewKMLLogfileReader([]byte(records))
+		break
+	case LOGFILE_IGC:
+		reader, err = NewIGCLogfileReader(records)
+		break
+	default:
+		return nil, errors.New("Not a supported logfile")
+	}
 
 	if err != nil {
 		return nil, err
 	}
 
 	flightRecords, err := reader.ReadRecords()
-	fmt.Println(flightRecords)
 
 	flightStats := NewFlightStats(flightRecords)
 
@@ -52,4 +62,5 @@ func (l *LogfileService) ProcessIGCLogfile(records string) (*FlightLog, error) {
 		Start:   start,
 		Landing: landing,
 	}, nil
+
 }

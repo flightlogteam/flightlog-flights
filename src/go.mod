@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/bradfitz/latlong v0.0.0-20170410180902-f3db6d0dff40
-	github.com/flightlogteam/userservice/grpc v0.0.8
+	github.com/flightlogteam/userservice/grpc v1.2.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
