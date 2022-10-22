@@ -55,6 +55,15 @@ func (f *FlightService) Create(flight *Flight) (string, error) {
 
 	user, err := f.userRepository.UserByUserId(context.Background(), &userservice.UserByIdRequest{UserId: flight.UserID})
 
+	device, err := f.userRepository.FlyingDeviceExsists(context.Background(), &userservice.FlyingDeviceExsistsRequest{DeviceId: flight.FlyingDevice})
+
+	if !device.Exsists {
+		return "", common.ErrorServiceMissingParameter
+	}
+
+	flight.Privacy = PrivacyLevel(user.PrivacyLevel)
+	flight.UserID = user.UserId
+
 	if err != nil {
 		return "", common.ErrorServiceMissingParameter
 	}
@@ -109,7 +118,7 @@ func (f *FlightService) validateLocations(flight *Flight) bool {
 }
 
 func (f *FlightService) validateFlight(flight *Flight) bool {
-	return flight.StartID > 0 && flight.LandingID > 0 && len(flight.Description) > 10
+	return flight.Duration > 5
 }
 
 func dialUserService(serviceUrl string, port string, secure bool) (*grpc.ClientConn, error) {

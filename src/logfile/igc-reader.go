@@ -45,8 +45,8 @@ func (line logline) ReadBRecord(date *time.Time) (LogRecord, error) {
 	}
 	time, err := parseTime(string(line[1:7]), *date)
 
-	latitude, err := parseCoordinate(string(line[7:14]))
-	longitude, err := parseCoordinate(string(line[16:23]))
+	latitude, err := parseCoordinate(string(line[7:15]))
+	longitude, err := parseCoordinate(string(line[16:24]))
 
 	altitudePreassure, _ := strconv.ParseInt(string(line[25:30]), 10, 32)
 	altitudeGNSS, _ := strconv.ParseInt(string(line[30:35]), 10, 32)
@@ -143,14 +143,20 @@ func parseCoordinate(coordinate string) (float64, error) {
 		return 0, errors.New("Unable to parse the coordinate")
 	}
 
-	minutes, err := strconv.ParseInt(coordinate[2:], 10, 16)
+	minutes, err := strconv.ParseInt(coordinate[2:len(coordinate)-2], 10, 16)
 
 	if err != nil {
 		return 0, errors.New("Unable to parse the coordinate")
 	}
 
-	return math.Round((float64(deg)+float64(minutes)/60000)*100000) / 100000, nil
+	result, err := math.Round((float64(deg)+float64(minutes)/60000)*100000)/100000, nil
 
+	coordinateDirection := string(coordinate[len(coordinate)-1])
+	if coordinateDirection == "S" || coordinateDirection == "W" {
+		return result * -1, err
+	}
+
+	return result, err
 }
 
 // parseTime formatted as HHMMSS

@@ -1,0 +1,40 @@
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<name>Flight 10.10.2022 @ 09:11</name>
+<Placemark id="385831333137030B000C00-1665393079">
+<name>Flight</name>
+<visibility>1</visibility>
+<open>1</open>
+<TimeSpan>
+<begin>2022-10-10T09:11:19Z</begin>
+<end>2022-10-10T09:11:27Z</end>
+</TimeSpan>
+<Style>
+<LineStyle><color>ff00ffff</color></LineStyle>
+<PolyStyle><color>7f0000ff</color></PolyStyle>
+</Style>
+<LineString>
+<extrude>1</extrude>
+<altitudeMode>absolute</altitudeMode>
+<coordinates>
++006.9439833,+43.7228650,1126
++006.9439516,+43.7227750,1126
++006.9439883,+43.7228650,1126
++006.9439716,+43.7228550,1156
++006.9439483,+43.7227983,1157
++006.9439166,+43.7227466,1157
+<!-- bat: 50% (3409) -->
+<!-- temp: 12 68% -->
++006.9438350,+43.7226583,1121
+<!--  SKYDROP-START-s: 1665400279  -->
+<!--  SKYDROP-DURATION-ms: 8004  -->
+<!--  SKYDROP-ALT-MAX-m: 1157  -->
+<!--  SKYDROP-ALT-MIN-m: 1011  -->
+<!--  SKYDROP-CLIMB-MAX-cm: 24  -->
+<!--  SKYDROP-SINK-MAX-cm: 0  -->
+<!--  SKYDROP-ODO-m: 7  -->
+</coordinates>
+</LineString>
+</Placemark>
+</Document>
+</kml>
